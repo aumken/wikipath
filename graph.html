@@ -1,0 +1,259 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "blue", "id": "Rostki, Pisz County", "label": "Rostki, Pisz County", "shape": "dot", "title": "Rostki, Pisz County"}, {"color": "blue", "id": "Village", "label": "Village", "shape": "dot", "title": "Village"}, {"color": "green", "id": "Wisconsin", "label": "Wisconsin", "shape": "dot", "title": "Wisconsin"}, {"color": "red", "id": "List of people from Wisconsin", "label": "List of people from Wisconsin", "shape": "dot", "title": "List of people from Wisconsin"}, {"color": "red", "id": "Ryne Duren", "label": "Ryne Duren", "shape": "dot", "title": "Ryne Duren"}, {"color": "#97c2fc", "id": "Lipa Tylna", "label": "Lipa Tylna", "shape": "dot", "title": "Lipa Tylna"}, {"color": "#97c2fc", "id": "Rakowo Piskie", "label": "Rakowo Piskie", "shape": "dot", "title": "Rakowo Piskie"}, {"color": "#97c2fc", "id": "\u0141upki, Warmian-Masurian Voivodeship", "label": "\u0141upki, Warmian-Masurian Voivodeship", "shape": "dot", "title": "\u0141upki, Warmian-Masurian Voivodeship"}, {"color": "#97c2fc", "id": "Liski, Pisz County", "label": "Liski, Pisz County", "shape": "dot", "title": "Liski, Pisz County"}, {"color": "#97c2fc", "id": "Voivodeships of Poland", "label": "Voivodeships of Poland", "shape": "dot", "title": "Voivodeships of Poland"}, {"color": "#97c2fc", "id": "Jagodne, Warmian-Masurian Voivodeship", "label": "Jagodne, Warmian-Masurian Voivodeship", "shape": "dot", "title": "Jagodne, Warmian-Masurian Voivodeship"}, {"color": "#97c2fc", "id": "Karwik", "label": "Karwik", "shape": "dot", "title": "Karwik"}, {"color": "#97c2fc", "id": "Zdunowo, Warmian-Masurian Voivodeship", "label": "Zdunowo, Warmian-Masurian Voivodeship", "shape": "dot", "title": "Zdunowo, Warmian-Masurian Voivodeship"}, {"color": "#97c2fc", "id": "Trzonki", "label": "Trzonki", "shape": "dot", "title": "Trzonki"}, {"color": "#97c2fc", "id": "Szeroki B\u00f3r Piski", "label": "Szeroki B\u00f3r Piski", "shape": "dot", "title": "Szeroki B\u00f3r Piski"}, {"color": "#97c2fc", "id": "W\u0105glik-Kolonia", "label": "W\u0105glik-Kolonia", "shape": "dot", "title": "W\u0105glik-Kolonia"}, {"color": "#97c2fc", "id": "Czarny R\u00f3g, Pisz County", "label": "Czarny R\u00f3g, Pisz County", "shape": "dot", "title": "Czarny R\u00f3g, Pisz County"}, {"color": "#97c2fc", "id": "Maszty", "label": "Maszty", "shape": "dot", "title": "Maszty"}, {"color": "#97c2fc", "id": "Lipa Przednia", "label": "Lipa Przednia", "shape": "dot", "title": "Lipa Przednia"}, {"color": "#97c2fc", "id": "Maldanin", "label": "Maldanin", "shape": "dot", "title": "Maldanin"}, {"color": "#97c2fc", "id": "Babrosty", "label": "Babrosty", "shape": "dot", "title": "Babrosty"}, {"color": "#97c2fc", "id": "Zimna, Warmian-Masurian Voivodeship", "label": "Zimna, Warmian-Masurian Voivodeship", "shape": "dot", "title": "Zimna, Warmian-Masurian Voivodeship"}, {"color": "#97c2fc", "id": "Szparki", "label": "Szparki", "shape": "dot", "title": "Szparki"}, {"color": "#97c2fc", "id": "Szczechy Wielkie", "label": "Szczechy Wielkie", "shape": "dot", "title": "Szczechy Wielkie"}, {"color": "#97c2fc", "id": "Pietrzyki", "label": "Pietrzyki", "shape": "dot", "title": "Pietrzyki"}, {"color": "#97c2fc", "id": "Pogobie Tylne", "label": "Pogobie Tylne", "shape": "dot", "title": "Pogobie Tylne"}, {"color": "#97c2fc", "id": "Anuszewo", "label": "Anuszewo", "shape": "dot", "title": "Anuszewo"}, {"color": "#97c2fc", "id": "Dziadki", "label": "Dziadki", "shape": "dot", "title": "Dziadki"}, {"color": "#97c2fc", "id": "Rostki (disambiguation)", "label": "Rostki (disambiguation)", "shape": "dot", "title": "Rostki (disambiguation)"}, {"color": "#97c2fc", "id": "Turowo Du\u017ce", "label": "Turowo Du\u017ce", "shape": "dot", "title": "Turowo Du\u017ce"}, {"color": "#97c2fc", "id": "\u0141ysonie", "label": "\u0141ysonie", "shape": "dot", "title": "\u0141ysonie"}, {"color": "#97c2fc", "id": "Geographic coordinate system", "label": "Geographic coordinate system", "shape": "dot", "title": "Geographic coordinate system"}, {"color": "#97c2fc", "id": "Karpa", "label": "Karpa", "shape": "dot", "title": "Karpa"}, {"color": "#97c2fc", "id": "Bogumi\u0142y, Pisz County", "label": "Bogumi\u0142y, Pisz County", "shape": "dot", "title": "Bogumi\u0142y, Pisz County"}, {"color": "#97c2fc", "id": "Pilchy, Warmian-Masurian Voivodeship", "label": "Pilchy, Warmian-Masurian Voivodeship", "shape": "dot", "title": "Pilchy, Warmian-Masurian Voivodeship"}, {"color": "#97c2fc", "id": "Jab\u0142o\u0144, Warmian-Masurian Voivodeship", "label": "Jab\u0142o\u0144, Warmian-Masurian Voivodeship", "shape": "dot", "title": "Jab\u0142o\u0144, Warmian-Masurian Voivodeship"}, {"color": "#97c2fc", "id": "Kocio\u0142 Du\u017cy", "label": "Kocio\u0142 Du\u017cy", "shape": "dot", "title": "Kocio\u0142 Du\u017cy"}, {"color": "#97c2fc", "id": "Turo\u015bl, Warmian-Masurian Voivodeship", "label": "Turo\u015bl, Warmian-Masurian Voivodeship", "shape": "dot", "title": "Turo\u015bl, Warmian-Masurian Voivodeship"}, {"color": "#97c2fc", "id": "Pisz County", "label": "Pisz County", "shape": "dot", "title": "Pisz County"}, {"color": "#97c2fc", "id": "Nied\u017awiedzie, Pisz County", "label": "Nied\u017awiedzie, Pisz County", "shape": "dot", "title": "Nied\u017awiedzie, Pisz County"}, {"color": "#97c2fc", "id": "Borki, Pisz County", "label": "Borki, Pisz County", "shape": "dot", "title": "Borki, Pisz County"}, {"color": "#97c2fc", "id": "Pisz", "label": "Pisz", "shape": "dot", "title": "Pisz"}, {"color": "#97c2fc", "id": "Wiartel Ma\u0142y", "label": "Wiartel Ma\u0142y", "shape": "dot", "title": "Wiartel Ma\u0142y"}, {"color": "#97c2fc", "id": "Piskorzewo", "label": "Piskorzewo", "shape": "dot", "title": "Piskorzewo"}, {"color": "#97c2fc", "id": "Stare U\u015bciany", "label": "Stare U\u015bciany", "shape": "dot", "title": "Stare U\u015bciany"}, {"color": "#97c2fc", "id": "Wielki Las", "label": "Wielki Las", "shape": "dot", "title": "Wielki Las"}, {"color": "#97c2fc", "id": "Powiat", "label": "Powiat", "shape": "dot", "title": "Powiat"}, {"color": "#97c2fc", "id": "Zaro\u015blak, Gmina Pisz", "label": "Zaro\u015blak, Gmina Pisz", "shape": "dot", "title": "Zaro\u015blak, Gmina Pisz"}, {"color": "#97c2fc", "id": "Ja\u015bkowo, Pisz County", "label": "Ja\u015bkowo, Pisz County", "shape": "dot", "title": "Ja\u015bkowo, Pisz County"}, {"color": "#97c2fc", "id": "Pogobie \u015arednie", "label": "Pogobie \u015arednie", "shape": "dot", "title": "Pogobie \u015arednie"}, {"color": "#97c2fc", "id": "Zdory", "label": "Zdory", "shape": "dot", "title": "Zdory"}, {"color": "#97c2fc", "id": "Countries of the world", "label": "Countries of the world", "shape": "dot", "title": "Countries of the world"}, {"color": "#97c2fc", "id": "Kocio\u0142ek Szlachecki", "label": "Kocio\u0142ek Szlachecki", "shape": "dot", "title": "Kocio\u0142ek Szlachecki"}, {"color": "#97c2fc", "id": "Nowe U\u015bciany", "label": "Nowe U\u015bciany", "shape": "dot", "title": "Nowe U\u015bciany"}, {"color": "#97c2fc", "id": "Kulaks", "label": "Kulaks", "shape": "dot", "title": "Kulaks"}, {"color": "#97c2fc", "id": "Million", "label": "Million", "shape": "dot", "title": "Million"}, {"color": "#97c2fc", "id": "Swiss Alps", "label": "Swiss Alps", "shape": "dot", "title": "Swiss Alps"}, {"color": "#97c2fc", "id": "Berber people", "label": "Berber people", "shape": "dot", "title": "Berber people"}, {"color": "#97c2fc", "id": "Seat (administrative division)", "label": "Seat (administrative division)", "shape": "dot", "title": "Seat (administrative division)"}, {"color": "#97c2fc", "id": "Plas\u0103", "label": "Plas\u0103", "shape": "dot", "title": "Plas\u0103"}, {"color": "#97c2fc", "id": "Mountain resort municipality", "label": "Mountain resort municipality", "shape": "dot", "title": "Mountain resort municipality"}, {"color": "#97c2fc", "id": "Municipal district", "label": "Municipal district", "shape": "dot", "title": "Municipal district"}, {"color": "#97c2fc", "id": "Free economic zone", "label": "Free economic zone", "shape": "dot", "title": "Free economic zone"}, {"color": "#97c2fc", "id": "Bali", "label": "Bali", "shape": "dot", "title": "Bali"}, {"color": "#97c2fc", "id": "Police district", "label": "Police district", "shape": "dot", "title": "Police district"}, {"color": "#97c2fc", "id": "Mainland China", "label": "Mainland China", "shape": "dot", "title": "Mainland China"}, {"color": "#97c2fc", "id": "Hyannis, Massachusetts", "label": "Hyannis, Massachusetts", "shape": "dot", "title": "Hyannis, Massachusetts"}, {"color": "#97c2fc", "id": "Province", "label": "Province", "shape": "dot", "title": "Province"}, {"color": "#97c2fc", "id": "Strochitsy", "label": "Strochitsy", "shape": "dot", "title": "Strochitsy"}, {"color": "#97c2fc", "id": "Proto-state", "label": "Proto-state", "shape": "dot", "title": "Proto-state"}, {"color": "#97c2fc", "id": "Dormitory", "label": "Dormitory", "shape": "dot", "title": "Dormitory"}, {"color": "#97c2fc", "id": "List of the largest villages in England", "label": "List of the largest villages in England", "shape": "dot", "title": "List of the largest villages in England"}, {"color": "#97c2fc", "id": "City", "label": "City", "shape": "dot", "title": "City"}, {"color": "#97c2fc", "id": "Deserted medieval village", "label": "Deserted medieval village", "shape": "dot", "title": "Deserted medieval village"}, {"color": "#97c2fc", "id": "Country", "label": "Country", "shape": "dot", "title": "Country"}, {"color": "#97c2fc", "id": "Jabal al-Druze", "label": "Jabal al-Druze", "shape": "dot", "title": "Jabal al-Druze"}, {"color": "#97c2fc", "id": "PMC (identifier)", "label": "PMC (identifier)", "shape": "dot", "title": "PMC (identifier)"}, {"color": "#97c2fc", "id": "Sheep", "label": "Sheep", "shape": "dot", "title": "Sheep"}, {"color": "#97c2fc", "id": "Collectivization", "label": "Collectivization", "shape": "dot", "title": "Collectivization"}, {"color": "#97c2fc", "id": "Comune", "label": "Comune", "shape": "dot", "title": "Comune"}, {"color": "#97c2fc", "id": "Gated community", "label": "Gated community", "shape": "dot", "title": "Gated community"}, {"color": "#97c2fc", "id": "Urdu", "label": "Urdu", "shape": "dot", "title": "Urdu"}, {"color": "#97c2fc", "id": "Korale", "label": "Korale", "shape": "dot", "title": "Korale"}, {"color": "#97c2fc", "id": "Dhani and villages", "label": "Dhani and villages", "shape": "dot", "title": "Dhani and villages"}, {"color": "#97c2fc", "id": "Local service district", "label": "Local service district", "shape": "dot", "title": "Local service district"}, {"color": "#97c2fc", "id": "Nigeria", "label": "Nigeria", "shape": "dot", "title": "Nigeria"}, {"color": "#97c2fc", "id": "Friuli, Italy", "label": "Friuli, Italy", "shape": "dot", "title": "Friuli, Italy"}, {"color": "#97c2fc", "id": "Union territory", "label": "Union territory", "shape": "dot", "title": "Union territory"}, {"color": "#97c2fc", "id": "County-administered city", "label": "County-administered city", "shape": "dot", "title": "County-administered city"}, {"color": "#97c2fc", "id": "Manor house", "label": "Manor house", "shape": "dot", "title": "Manor house"}, {"color": "#97c2fc", "id": "Consolidated city-county", "label": "Consolidated city-county", "shape": "dot", "title": "Consolidated city-county"}, {"color": "#97c2fc", "id": "Principality", "label": "Principality", "shape": "dot", "title": "Principality"}, {"color": "#97c2fc", "id": "Riding (division)", "label": "Riding (division)", "shape": "dot", "title": "Riding (division)"}, {"color": "#97c2fc", "id": "S2CID (identifier)", "label": "S2CID (identifier)", "shape": "dot", "title": "S2CID (identifier)"}, {"color": "#97c2fc", "id": "Special district (United States)", "label": "Special district (United States)", "shape": "dot", "title": "Special district (United States)"}, {"color": "#97c2fc", "id": "Apskritis", "label": "Apskritis", "shape": "dot", "title": "Apskritis"}, {"color": "#97c2fc", "id": "Villa Traful", "label": "Villa Traful", "shape": "dot", "title": "Villa Traful"}, {"color": "#97c2fc", "id": "Pit village", "label": "Pit village", "shape": "dot", "title": "Pit village"}, {"color": "#97c2fc", "id": "Ksar", "label": "Ksar", "shape": "dot", "title": "Ksar"}, {"color": "#97c2fc", "id": "Kichkalnya", "label": "Kichkalnya", "shape": "dot", "title": "Kichkalnya"}, {"color": "#97c2fc", "id": "Newfoundland (island)", "label": "Newfoundland (island)", "shape": "dot", "title": "Newfoundland (island)"}, {"color": "#97c2fc", "id": "Barony (county division)", "label": "Barony (county division)", "shape": "dot", "title": "Barony (county division)"}, {"color": "#97c2fc", "id": "Clent Hills", "label": "Clent Hills", "shape": "dot", "title": "Clent Hills"}, {"color": "#97c2fc", "id": "Indian government district", "label": "Indian government district", "shape": "dot", "title": "Indian government district"}, {"color": "#97c2fc", "id": "History of Wisconsin", "label": "History of Wisconsin", "shape": "dot", "title": "History of Wisconsin"}, {"color": "#97c2fc", "id": "List of people from Illinois", "label": "List of people from Illinois", "shape": "dot", "title": "List of people from Illinois"}, {"color": "#97c2fc", "id": "Superintendent of Public Instruction of Wisconsin", "label": "Superintendent of Public Instruction of Wisconsin", "shape": "dot", "title": "Superintendent of Public Instruction of Wisconsin"}, {"color": "#97c2fc", "id": "Eau Claire Area School District", "label": "Eau Claire Area School District", "shape": "dot", "title": "Eau Claire Area School District"}, {"color": "#97c2fc", "id": "List of people from Oklahoma", "label": "List of people from Oklahoma", "shape": "dot", "title": "List of people from Oklahoma"}, {"color": "#97c2fc", "id": "Jefferson County, Wisconsin", "label": "Jefferson County, Wisconsin", "shape": "dot", "title": "Jefferson County, Wisconsin"}, {"color": "#97c2fc", "id": "List of Superfund sites in Wisconsin", "label": "List of Superfund sites in Wisconsin", "shape": "dot", "title": "List of Superfund sites in Wisconsin"}, {"color": "#97c2fc", "id": "List of Wisconsin state parks", "label": "List of Wisconsin state parks", "shape": "dot", "title": "List of Wisconsin state parks"}, {"color": "#97c2fc", "id": "List of casinos in Wisconsin", "label": "List of casinos in Wisconsin", "shape": "dot", "title": "List of casinos in Wisconsin"}, {"color": "#97c2fc", "id": "Sauk County, Wisconsin", "label": "Sauk County, Wisconsin", "shape": "dot", "title": "Sauk County, Wisconsin"}, {"color": "#97c2fc", "id": "176th Fighter Squadron", "label": "176th Fighter Squadron", "shape": "dot", "title": "176th Fighter Squadron"}, {"color": "#97c2fc", "id": "Dane County, Wisconsin", "label": "Dane County, Wisconsin", "shape": "dot", "title": "Dane County, Wisconsin"}, {"color": "#97c2fc", "id": "Price County, Wisconsin", "label": "Price County, Wisconsin", "shape": "dot", "title": "Price County, Wisconsin"}, {"color": "#97c2fc", "id": "United States congressional delegations from Wisconsin", "label": "United States congressional delegations from Wisconsin", "shape": "dot", "title": "United States congressional delegations from Wisconsin"}, {"color": "#97c2fc", "id": "Iron Mountain micropolitan area", "label": "Iron Mountain micropolitan area", "shape": "dot", "title": "Iron Mountain micropolitan area"}, {"color": "#97c2fc", "id": "Bayfield County, Wisconsin", "label": "Bayfield County, Wisconsin", "shape": "dot", "title": "Bayfield County, Wisconsin"}, {"color": "#97c2fc", "id": "St. Croix County, Wisconsin", "label": "St. Croix County, Wisconsin", "shape": "dot", "title": "St. Croix County, Wisconsin"}, {"color": "#97c2fc", "id": "Climate change in Wisconsin", "label": "Climate change in Wisconsin", "shape": "dot", "title": "Climate change in Wisconsin"}, {"color": "#97c2fc", "id": "Northern Highland", "label": "Northern Highland", "shape": "dot", "title": "Northern Highland"}, {"color": "#97c2fc", "id": "List of people from Missouri", "label": "List of people from Missouri", "shape": "dot", "title": "List of people from Missouri"}, {"color": "#97c2fc", "id": "List of people from West Virginia", "label": "List of people from West Virginia", "shape": "dot", "title": "List of people from West Virginia"}, {"color": "#97c2fc", "id": "Menominee County, Wisconsin", "label": "Menominee County, Wisconsin", "shape": "dot", "title": "Menominee County, Wisconsin"}, {"color": "#97c2fc", "id": "Music of Wisconsin", "label": "Music of Wisconsin", "shape": "dot", "title": "Music of Wisconsin"}, {"color": "#97c2fc", "id": "List of bike trails in Wisconsin", "label": "List of bike trails in Wisconsin", "shape": "dot", "title": "List of bike trails in Wisconsin"}, {"color": "#97c2fc", "id": "Green County, Wisconsin", "label": "Green County, Wisconsin", "shape": "dot", "title": "Green County, Wisconsin"}, {"color": "#97c2fc", "id": "List of people from Waukesha, Wisconsin", "label": "List of people from Waukesha, Wisconsin", "shape": "dot", "title": "List of people from Waukesha, Wisconsin"}, {"color": "#97c2fc", "id": "West Allis, Wisconsin", "label": "West Allis, Wisconsin", "shape": "dot", "title": "West Allis, Wisconsin"}, {"color": "#97c2fc", "id": "List of television stations in Wisconsin", "label": "List of television stations in Wisconsin", "shape": "dot", "title": "List of television stations in Wisconsin"}, {"color": "#97c2fc", "id": "Antigo, Wisconsin", "label": "Antigo, Wisconsin", "shape": "dot", "title": "Antigo, Wisconsin"}, {"color": "#97c2fc", "id": "Swamp Creek (Wisconsin)", "label": "Swamp Creek (Wisconsin)", "shape": "dot", "title": "Swamp Creek (Wisconsin)"}, {"color": "#97c2fc", "id": "List of sports-related people from Mississippi", "label": "List of sports-related people from Mississippi", "shape": "dot", "title": "List of sports-related people from Mississippi"}, {"color": "#97c2fc", "id": "Crawford County, Wisconsin", "label": "Crawford County, Wisconsin", "shape": "dot", "title": "Crawford County, Wisconsin"}, {"color": "#97c2fc", "id": "List of people from Virginia", "label": "List of people from Virginia", "shape": "dot", "title": "List of people from Virginia"}, {"color": "#97c2fc", "id": "Ozaukee County, Wisconsin", "label": "Ozaukee County, Wisconsin", "shape": "dot", "title": "Ozaukee County, Wisconsin"}, {"color": "#97c2fc", "id": "Wisconsin Historical Society", "label": "Wisconsin Historical Society", "shape": "dot", "title": "Wisconsin Historical Society"}, {"color": "#97c2fc", "id": "List of people from Kansas", "label": "List of people from Kansas", "shape": "dot", "title": "List of people from Kansas"}, {"color": "#97c2fc", "id": "List of people from Washington, D.C.", "label": "List of people from Washington, D.C.", "shape": "dot", "title": "List of people from Washington, D.C."}, {"color": "#97c2fc", "id": "Flag of Wisconsin", "label": "Flag of Wisconsin", "shape": "dot", "title": "Flag of Wisconsin"}, {"color": "#97c2fc", "id": "Oconto County, Wisconsin", "label": "Oconto County, Wisconsin", "shape": "dot", "title": "Oconto County, Wisconsin"}, {"color": "#97c2fc", "id": "Pierce County, Wisconsin", "label": "Pierce County, Wisconsin", "shape": "dot", "title": "Pierce County, Wisconsin"}, {"color": "#97c2fc", "id": "Kenosha, Wisconsin", "label": "Kenosha, Wisconsin", "shape": "dot", "title": "Kenosha, Wisconsin"}, {"color": "#97c2fc", "id": "Waukesha County, Wisconsin", "label": "Waukesha County, Wisconsin", "shape": "dot", "title": "Waukesha County, Wisconsin"}, {"color": "#97c2fc", "id": "Dunn County, Wisconsin", "label": "Dunn County, Wisconsin", "shape": "dot", "title": "Dunn County, Wisconsin"}, {"color": "#97c2fc", "id": "List of people from Florida", "label": "List of people from Florida", "shape": "dot", "title": "List of people from Florida"}, {"color": "#97c2fc", "id": "List of people from South Dakota", "label": "List of people from South Dakota", "shape": "dot", "title": "List of people from South Dakota"}, {"color": "#97c2fc", "id": "Elections in Wisconsin", "label": "Elections in Wisconsin", "shape": "dot", "title": "Elections in Wisconsin"}, {"color": "#97c2fc", "id": "List of people from New York (state)", "label": "List of people from New York (state)", "shape": "dot", "title": "List of people from New York (state)"}, {"color": "#97c2fc", "id": "Rusk County, Wisconsin", "label": "Rusk County, Wisconsin", "shape": "dot", "title": "Rusk County, Wisconsin"}, {"color": "#97c2fc", "id": "Marquette County, Wisconsin", "label": "Marquette County, Wisconsin", "shape": "dot", "title": "Marquette County, Wisconsin"}, {"color": "#97c2fc", "id": "Iowa County, Wisconsin", "label": "Iowa County, Wisconsin", "shape": "dot", "title": "Iowa County, Wisconsin"}, {"color": "#97c2fc", "id": "1960 World Series", "label": "1960 World Series", "shape": "dot", "title": "1960 World Series"}, {"color": "#97c2fc", "id": "1954 Baltimore Orioles season", "label": "1954 Baltimore Orioles season", "shape": "dot", "title": "1954 Baltimore Orioles season"}, {"color": "#97c2fc", "id": "Bobby Richardson", "label": "Bobby Richardson", "shape": "dot", "title": "Bobby Richardson"}, {"color": "#97c2fc", "id": "Art Ditmar", "label": "Art Ditmar", "shape": "dot", "title": "Art Ditmar"}, {"color": "#97c2fc", "id": "Dick Hughes (baseball)", "label": "Dick Hughes (baseball)", "shape": "dot", "title": "Dick Hughes (baseball)"}, {"color": "#97c2fc", "id": "Bob Grim (baseball)", "label": "Bob Grim (baseball)", "shape": "dot", "title": "Bob Grim (baseball)"}, {"color": "#97c2fc", "id": "Tom Sturdivant", "label": "Tom Sturdivant", "shape": "dot", "title": "Tom Sturdivant"}, {"color": "#97c2fc", "id": "List of German Americans", "label": "List of German Americans", "shape": "dot", "title": "List of German Americans"}, {"color": "#97c2fc", "id": "Ryne", "label": "Ryne", "shape": "dot", "title": "Ryne"}, {"color": "#97c2fc", "id": "Jacob deGrom", "label": "Jacob deGrom", "shape": "dot", "title": "Jacob deGrom"}, {"color": "#97c2fc", "id": "Parke Carroll", "label": "Parke Carroll", "shape": "dot", "title": "Parke Carroll"}, {"color": "#97c2fc", "id": "Leonard Shecter", "label": "Leonard Shecter", "shape": "dot", "title": "Leonard Shecter"}, {"color": "#97c2fc", "id": "Pine Bluff Judges", "label": "Pine Bluff Judges", "shape": "dot", "title": "Pine Bluff Judges"}, {"color": "#97c2fc", "id": "Pete Rose", "label": "Pete Rose", "shape": "dot", "title": "Pete Rose"}, {"color": "#97c2fc", "id": "Del Ennis", "label": "Del Ennis", "shape": "dot", "title": "Del Ennis"}, {"color": "#97c2fc", "id": "Don Larsen", "label": "Don Larsen", "shape": "dot", "title": "Don Larsen"}, {"color": "#97c2fc", "id": "Lee May", "label": "Lee May", "shape": "dot", "title": "Lee May"}, {"color": "#97c2fc", "id": "1963 Philadelphia Phillies season", "label": "1963 Philadelphia Phillies season", "shape": "dot", "title": "1963 Philadelphia Phillies season"}, {"color": "#97c2fc", "id": "Enos Slaughter", "label": "Enos Slaughter", "shape": "dot", "title": "Enos Slaughter"}, {"color": "#97c2fc", "id": "Albert Pujols", "label": "Albert Pujols", "shape": "dot", "title": "Albert Pujols"}, {"color": "#97c2fc", "id": "Shohei Ohtani", "label": "Shohei Ohtani", "shape": "dot", "title": "Shohei Ohtani"}, {"color": "#97c2fc", "id": "Richie Ashburn", "label": "Richie Ashburn", "shape": "dot", "title": "Richie Ashburn"}, {"color": "#97c2fc", "id": "Bill Skowron", "label": "Bill Skowron", "shape": "dot", "title": "Bill Skowron"}, {"color": "#97c2fc", "id": "Clint Courtney", "label": "Clint Courtney", "shape": "dot", "title": "Clint Courtney"}, {"color": "#97c2fc", "id": "Jackie Robinson", "label": "Jackie Robinson", "shape": "dot", "title": "Jackie Robinson"}, {"color": "#97c2fc", "id": "Justin Verlander", "label": "Justin Verlander", "shape": "dot", "title": "Justin Verlander"}, {"color": "#97c2fc", "id": "Kyle Lewis", "label": "Kyle Lewis", "shape": "dot", "title": "Kyle Lewis"}, {"color": "#97c2fc", "id": "Rinold Duren", "label": "Rinold Duren", "shape": "dot", "title": "Rinold Duren"}, {"color": "#97c2fc", "id": "Zach Monroe", "label": "Zach Monroe", "shape": "dot", "title": "Zach Monroe"}, {"color": "#97c2fc", "id": "Gary Carter", "label": "Gary Carter", "shape": "dot", "title": "Gary Carter"}, {"color": "#97c2fc", "id": "Aaron Judge", "label": "Aaron Judge", "shape": "dot", "title": "Aaron Judge"}, {"color": "#97c2fc", "id": "Ryne Sandberg", "label": "Ryne Sandberg", "shape": "dot", "title": "Ryne Sandberg"}, {"color": "#97c2fc", "id": "Carlos Correa", "label": "Carlos Correa", "shape": "dot", "title": "Carlos Correa"}, {"color": "#97c2fc", "id": "1957 Kansas City Athletics season", "label": "1957 Kansas City Athletics season", "shape": "dot", "title": "1957 Kansas City Athletics season"}, {"color": "#97c2fc", "id": "Ralph Houk", "label": "Ralph Houk", "shape": "dot", "title": "Ralph Houk"}, {"color": "#97c2fc", "id": "Duke Maas", "label": "Duke Maas", "shape": "dot", "title": "Duke Maas"}, {"color": "#97c2fc", "id": "1958 Major League Baseball season", "label": "1958 Major League Baseball season", "shape": "dot", "title": "1958 Major League Baseball season"}, {"color": "#97c2fc", "id": "1959 Major League Baseball All-Star Game (first game)", "label": "1959 Major League Baseball All-Star Game (first game)", "shape": "dot", "title": "1959 Major League Baseball All-Star Game (first game)"}, {"color": "#97c2fc", "id": "1957 New York Yankees season", "label": "1957 New York Yankees season", "shape": "dot", "title": "1957 New York Yankees season"}, {"color": "#97c2fc", "id": "1961 New York Yankees season", "label": "1961 New York Yankees season", "shape": "dot", "title": "1961 New York Yankees season"}, {"color": "#97c2fc", "id": "Bobby Shantz", "label": "Bobby Shantz", "shape": "dot", "title": "Bobby Shantz"}, {"color": "#97c2fc", "id": "Johnny Kucks", "label": "Johnny Kucks", "shape": "dot", "title": "Johnny Kucks"}, {"color": "#97c2fc", "id": "List of American Association (1902\u20131997) no-hitters", "label": "List of American Association (1902\u20131997) no-hitters", "shape": "dot", "title": "List of American Association (1902\u20131997) no-hitters"}, {"color": "#97c2fc", "id": "Adolis Garc\u00eda", "label": "Adolis Garc\u00eda", "shape": "dot", "title": "Adolis Garc\u00eda"}, {"color": "#97c2fc", "id": "1929 in baseball", "label": "1929 in baseball", "shape": "dot", "title": "1929 in baseball"}, {"color": "#97c2fc", "id": "1961 Los Angeles Angels season", "label": "1961 Los Angeles Angels season", "shape": "dot", "title": "1961 Los Angeles Angels season"}, {"color": "#97c2fc", "id": "Casey Stengel", "label": "Casey Stengel", "shape": "dot", "title": "Casey Stengel"}, {"color": "#97c2fc", "id": "Julio Rodr\u00edguez (baseball)", "label": "Julio Rodr\u00edguez (baseball)", "shape": "dot", "title": "Julio Rodr\u00edguez (baseball)"}, {"color": "#97c2fc", "id": "Carlos Beltr\u00e1n", "label": "Carlos Beltr\u00e1n", "shape": "dot", "title": "Carlos Beltr\u00e1n"}, {"color": "#97c2fc", "id": "List of Major League Baseball annual saves leaders", "label": "List of Major League Baseball annual saves leaders", "shape": "dot", "title": "List of Major League Baseball annual saves leaders"}]);
+                  edges = new vis.DataSet([{"color": "blue", "from": "Rostki, Pisz County", "to": "Village"}, {"color": "blue", "from": "Village", "to": "Wisconsin"}, {"color": "red", "from": "Wisconsin", "to": "List of people from Wisconsin"}, {"color": "red", "from": "List of people from Wisconsin", "to": "Ryne Duren"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Lipa Tylna"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Rakowo Piskie"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "\u0141upki, Warmian-Masurian Voivodeship"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Liski, Pisz County"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Voivodeships of Poland"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Jagodne, Warmian-Masurian Voivodeship"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Karwik"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Zdunowo, Warmian-Masurian Voivodeship"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Trzonki"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Szeroki B\u00f3r Piski"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "W\u0105glik-Kolonia"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Czarny R\u00f3g, Pisz County"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Maszty"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Lipa Przednia"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Maldanin"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Babrosty"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Zimna, Warmian-Masurian Voivodeship"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Szparki"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Szczechy Wielkie"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Pietrzyki"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Pogobie Tylne"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Anuszewo"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Dziadki"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Rostki (disambiguation)"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Turowo Du\u017ce"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "\u0141ysonie"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Geographic coordinate system"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Karpa"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Bogumi\u0142y, Pisz County"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Pilchy, Warmian-Masurian Voivodeship"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Jab\u0142o\u0144, Warmian-Masurian Voivodeship"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Kocio\u0142 Du\u017cy"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Turo\u015bl, Warmian-Masurian Voivodeship"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Pisz County"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Nied\u017awiedzie, Pisz County"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Borki, Pisz County"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Pisz"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Wiartel Ma\u0142y"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Piskorzewo"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Stare U\u015bciany"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Wielki Las"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Powiat"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Zaro\u015blak, Gmina Pisz"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Ja\u015bkowo, Pisz County"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Pogobie \u015arednie"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Zdory"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Countries of the world"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Kocio\u0142ek Szlachecki"}, {"color": "grey", "from": "Rostki, Pisz County", "to": "Nowe U\u015bciany"}, {"color": "grey", "from": "Village", "to": "Kulaks"}, {"color": "grey", "from": "Village", "to": "Million"}, {"color": "grey", "from": "Village", "to": "Swiss Alps"}, {"color": "grey", "from": "Village", "to": "Berber people"}, {"color": "grey", "from": "Village", "to": "Seat (administrative division)"}, {"color": "grey", "from": "Village", "to": "Plas\u0103"}, {"color": "grey", "from": "Village", "to": "Mountain resort municipality"}, {"color": "grey", "from": "Village", "to": "Municipal district"}, {"color": "grey", "from": "Village", "to": "Free economic zone"}, {"color": "grey", "from": "Village", "to": "Bali"}, {"color": "grey", "from": "Village", "to": "Police district"}, {"color": "grey", "from": "Village", "to": "Mainland China"}, {"color": "grey", "from": "Village", "to": "Hyannis, Massachusetts"}, {"color": "grey", "from": "Village", "to": "Province"}, {"color": "grey", "from": "Village", "to": "Strochitsy"}, {"color": "grey", "from": "Village", "to": "Proto-state"}, {"color": "grey", "from": "Village", "to": "Dormitory"}, {"color": "grey", "from": "Village", "to": "List of the largest villages in England"}, {"color": "grey", "from": "Village", "to": "City"}, {"color": "grey", "from": "Village", "to": "Deserted medieval village"}, {"color": "grey", "from": "Village", "to": "Country"}, {"color": "grey", "from": "Village", "to": "Jabal al-Druze"}, {"color": "grey", "from": "Village", "to": "PMC (identifier)"}, {"color": "grey", "from": "Village", "to": "Sheep"}, {"color": "grey", "from": "Village", "to": "Collectivization"}, {"color": "grey", "from": "Village", "to": "Comune"}, {"color": "grey", "from": "Village", "to": "Gated community"}, {"color": "grey", "from": "Village", "to": "Urdu"}, {"color": "grey", "from": "Village", "to": "Korale"}, {"color": "grey", "from": "Village", "to": "Dhani and villages"}, {"color": "grey", "from": "Village", "to": "Local service district"}, {"color": "grey", "from": "Village", "to": "Nigeria"}, {"color": "grey", "from": "Village", "to": "Friuli, Italy"}, {"color": "grey", "from": "Village", "to": "Union territory"}, {"color": "grey", "from": "Village", "to": "County-administered city"}, {"color": "grey", "from": "Village", "to": "Manor house"}, {"color": "grey", "from": "Village", "to": "Consolidated city-county"}, {"color": "grey", "from": "Village", "to": "Principality"}, {"color": "grey", "from": "Village", "to": "Riding (division)"}, {"color": "grey", "from": "Village", "to": "S2CID (identifier)"}, {"color": "grey", "from": "Village", "to": "Special district (United States)"}, {"color": "grey", "from": "Village", "to": "Apskritis"}, {"color": "grey", "from": "Village", "to": "Villa Traful"}, {"color": "grey", "from": "Village", "to": "Pit village"}, {"color": "grey", "from": "Village", "to": "Ksar"}, {"color": "grey", "from": "Village", "to": "Kichkalnya"}, {"color": "grey", "from": "Village", "to": "Newfoundland (island)"}, {"color": "grey", "from": "Village", "to": "Barony (county division)"}, {"color": "grey", "from": "Village", "to": "Clent Hills"}, {"color": "grey", "from": "Village", "to": "Indian government district"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "History of Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from Illinois"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Superintendent of Public Instruction of Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Eau Claire Area School District"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from Oklahoma"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Jefferson County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of Superfund sites in Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of Wisconsin state parks"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of casinos in Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Sauk County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "176th Fighter Squadron"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Dane County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Price County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "United States congressional delegations from Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Iron Mountain micropolitan area"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Bayfield County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "St. Croix County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Climate change in Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Northern Highland"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from Missouri"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from West Virginia"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Menominee County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Music of Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of bike trails in Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Green County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from Waukesha, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "West Allis, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of television stations in Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Antigo, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Swamp Creek (Wisconsin)"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of sports-related people from Mississippi"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Crawford County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from Virginia"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Ozaukee County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Wisconsin Historical Society"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from Kansas"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from Washington, D.C."}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Flag of Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Oconto County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Pierce County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Kenosha, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Waukesha County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Dunn County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from Florida"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from South Dakota"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Elections in Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "List of people from New York (state)"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Rusk County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Marquette County, Wisconsin"}, {"color": "grey", "from": "List of people from Wisconsin", "to": "Iowa County, Wisconsin"}, {"color": "grey", "from": "Ryne Duren", "to": "1960 World Series"}, {"color": "grey", "from": "Ryne Duren", "to": "1954 Baltimore Orioles season"}, {"color": "grey", "from": "Ryne Duren", "to": "Bobby Richardson"}, {"color": "grey", "from": "Ryne Duren", "to": "Art Ditmar"}, {"color": "grey", "from": "Ryne Duren", "to": "Dick Hughes (baseball)"}, {"color": "grey", "from": "Ryne Duren", "to": "Bob Grim (baseball)"}, {"color": "grey", "from": "Ryne Duren", "to": "Tom Sturdivant"}, {"color": "grey", "from": "Ryne Duren", "to": "List of German Americans"}, {"color": "grey", "from": "Ryne Duren", "to": "Ryne"}, {"color": "grey", "from": "Ryne Duren", "to": "Jacob deGrom"}, {"color": "grey", "from": "Ryne Duren", "to": "Parke Carroll"}, {"color": "grey", "from": "Ryne Duren", "to": "Leonard Shecter"}, {"color": "grey", "from": "Ryne Duren", "to": "Pine Bluff Judges"}, {"color": "grey", "from": "Ryne Duren", "to": "Pete Rose"}, {"color": "grey", "from": "Ryne Duren", "to": "Del Ennis"}, {"color": "grey", "from": "Ryne Duren", "to": "Don Larsen"}, {"color": "grey", "from": "Ryne Duren", "to": "Lee May"}, {"color": "grey", "from": "Ryne Duren", "to": "1963 Philadelphia Phillies season"}, {"color": "grey", "from": "Ryne Duren", "to": "Enos Slaughter"}, {"color": "grey", "from": "Ryne Duren", "to": "Albert Pujols"}, {"color": "grey", "from": "Ryne Duren", "to": "Shohei Ohtani"}, {"color": "grey", "from": "Ryne Duren", "to": "Richie Ashburn"}, {"color": "grey", "from": "Ryne Duren", "to": "Bill Skowron"}, {"color": "grey", "from": "Ryne Duren", "to": "Clint Courtney"}, {"color": "grey", "from": "Ryne Duren", "to": "Jackie Robinson"}, {"color": "grey", "from": "Ryne Duren", "to": "Justin Verlander"}, {"color": "grey", "from": "Ryne Duren", "to": "Kyle Lewis"}, {"color": "grey", "from": "Ryne Duren", "to": "Rinold Duren"}, {"color": "grey", "from": "Ryne Duren", "to": "Zach Monroe"}, {"color": "grey", "from": "Ryne Duren", "to": "Gary Carter"}, {"color": "grey", "from": "Ryne Duren", "to": "Aaron Judge"}, {"color": "grey", "from": "Ryne Duren", "to": "Ryne Sandberg"}, {"color": "grey", "from": "Ryne Duren", "to": "Carlos Correa"}, {"color": "grey", "from": "Ryne Duren", "to": "1957 Kansas City Athletics season"}, {"color": "grey", "from": "Ryne Duren", "to": "Ralph Houk"}, {"color": "grey", "from": "Ryne Duren", "to": "Duke Maas"}, {"color": "grey", "from": "Ryne Duren", "to": "1958 Major League Baseball season"}, {"color": "grey", "from": "Ryne Duren", "to": "1959 Major League Baseball All-Star Game (first game)"}, {"color": "grey", "from": "Ryne Duren", "to": "1957 New York Yankees season"}, {"color": "grey", "from": "Ryne Duren", "to": "1961 New York Yankees season"}, {"color": "grey", "from": "Ryne Duren", "to": "Bobby Shantz"}, {"color": "grey", "from": "Ryne Duren", "to": "Johnny Kucks"}, {"color": "grey", "from": "Ryne Duren", "to": "List of American Association (1902\u20131997) no-hitters"}, {"color": "grey", "from": "Ryne Duren", "to": "Adolis Garc\u00eda"}, {"color": "grey", "from": "Ryne Duren", "to": "1929 in baseball"}, {"color": "grey", "from": "Ryne Duren", "to": "1961 Los Angeles Angels season"}, {"color": "grey", "from": "Ryne Duren", "to": "Casey Stengel"}, {"color": "grey", "from": "Ryne Duren", "to": "Julio Rodr\u00edguez (baseball)"}, {"color": "grey", "from": "Ryne Duren", "to": "Carlos Beltr\u00e1n"}, {"color": "grey", "from": "Ryne Duren", "to": "List of Major League Baseball annual saves leaders"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.01,
+            "damping": 0.4,
+            "gravitationalConstant": -50,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
