@@ -1,4 +1,4 @@
-from api import get_forward_links, get_backward_links
+from models.api import get_forward_links, get_backward_links
 from collections import deque
 import time
 
