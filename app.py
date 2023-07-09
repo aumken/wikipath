@@ -1,4 +1,4 @@
-from v2 import bidirectional_search, visualize_graph
+from api import bidirectional_search, visualize_graph
 from flask import Flask, render_template, request
 
 app = Flask(__name__)

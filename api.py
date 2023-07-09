@@ -142,7 +142,6 @@ def visualize_graph(start_article, end_article, path, connection_point, adj_node
     return html_content
 
 
-
 def bidirectional_search(start_article, end_article):
 
     if not (get_forward_links(start_article) and get_backward_links(end_article)):
