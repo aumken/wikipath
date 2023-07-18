@@ -1,5 +1,6 @@
 from api import bidirectional_search, visualize_graph
 from flask import Flask, render_template, request
+import os  # Import the os module
 
 app = Flask(__name__)
 
@@ -28,6 +29,8 @@ def home():
     return render_template('index.html', result=result, graph_data=graph_data, error=error)
 
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Get the PORT environment variable (provided by Render) and fall back to 5000 if it doesn't exist.
+    port = int(os.environ.get("PORT", 5000))
+    # Run the app with the specified host and port
+    app.run(host='0.0.0.0', port=port)
